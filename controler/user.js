@@ -218,6 +218,12 @@ res.send({'data':"ok"})
     }
 
 
+
+
+
+
+
+
     exports.notificationTokenUpdate=(req,res)=>{
         user_model.user_model.updateOne({"user_id":req.body.user_id},{
             notification_token:req.body.token,
@@ -226,3 +232,31 @@ res.send({'data':"ok"})
             res.send({"data":s})
         })
     }
+
+
+ exports.userprofile_update=(req,res)=>{
+
+    console.log(req.body)
+    console.log(req.files)
+    if(req.files.file && req.files.file.length){
+        user_model.user_model.updateOne({"user_id":req.body.user_id},{
+            username:req.body.username,
+            password:req.body.password,
+            phone:req.body.phone,
+            profile_url:req.files.file[0].filename,
+        }).then((s)=>{
+            res.send({"data":s})
+        })
+    }else{
+        user_model.user_model.updateOne({"user_id":req.body.user_id},{
+            username:req.body.username,
+            password:req.body.password,
+            phoneno:req.body.phone,
+        }).then((s)=>{
+            res.send({"data":s})
+        })
+    }
+        
+    }
+
+   

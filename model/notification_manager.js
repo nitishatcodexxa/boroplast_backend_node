@@ -8,6 +8,7 @@ const notification_schema = new Schema({
     notification_desc:String,
     user_id:String,
     user_name:String,
+    date:Date
 
 })
 

@@ -42,6 +42,9 @@ res.send({"data":p})
          id:uuidv4(),
         ///////////////////// all change will be here next add,
         component:"",
+        component_cost:0,
+        component_repaire_cost:0,
+
         ref:"1",
         is_see_more:false,
 /////////////////////////////////////
@@ -50,6 +53,7 @@ res.send({"data":p})
      is_resolved:false, //////////// this.for handling tag
      ok_color:'#c9c9c9',
 not_ok_color:'#c9c9c9'
+
      });
     
     add_activity.save().then((res)=>{})
@@ -68,7 +72,7 @@ setTimeout(async()=>{
 
 exports.data_update_photo_level_one=(req,res)=>{
 console.log(req.body)
-console.log(req.files)
+console.log(req.files) 
 
 
 user_handling_activity_model.user_handling_activity_model.updateOne({"id":req.body.id},{
@@ -79,6 +83,9 @@ user_handling_activity_model.user_handling_activity_model.updateOne({"id":req.bo
    component:req.body.product,
    current_ref:req.body.current_ref,
    ref:req.body.ref,
+   component_cost:req.body.component_cost,
+   component_repaire_cost:req.body.component_repaire_cost
+
 }).then(()=>{
     if(req.files.file && req.files.file.length){ 
      for (let i = 0; i < req.files.file.length; i++) {
@@ -123,7 +130,7 @@ console.log(req.files)
         text:'ok',
         status:true,  
         ok_color:'#2cbd96',
-        not_ok_color:'#c9c9c9'
+        not_ok_color:'#c9c9c9',
     }).then(()=>{
         if(req.files.file && req.files.file.length){ 
          for (let i = 0; i < req.files.file.length; i++) {
@@ -207,5 +214,83 @@ exports.handle_not_ok=(req,res)=>{
 
 
 
+exports.update_photo_for_atm_after=(req,res)=>{
 
+    user_handling_activity_model.user_handling_activity_model.updateOne({"id":req.body.id},{
+        is_resolved:req.body.is_resolved,
+        current_ref:req.body.current_ref,
+        ref:req.body.ref,
+        text:'ok',
+        status:true,  
+        ok_color:'#2cbd96',
+        remark:req.body.remark
+
+    }).then(()=>{
+        if(req.files.file && req.files.file.length){ 
+         for (let i = 0; i < req.files.file.length; i++) {
+    
+        user_handling_activity_model.user_handling_activity_model.updateOne({"id":req.body.id}, {'$push': {'photo_after': { 'photo_id': Math.random() * 100030070000 , 'photo_name':req.files.file[i].filename}}}).then((e)=>{})
+        const dimensions = sizeOf(`./upload/${req.files.file[i].filename}`)
+        Jimp.read(`./upload/${req.files.file[i].filename}`)
+        .then((image) => {
+          Jimp.loadFont(Jimp.FONT_SANS_128_WHITE).then((font) => { 
+            image.print(font, 30, 30, moment(new Date()).format('DD MM YYYY hh:ss'));
+            image.print(font, 10, 1, {
+                text: req.body.location,
+                alignmentX: Jimp.HORIZONTAL_ALIGN_CENTER,
+                alignmentY: Jimp.VERTICAL_ALIGN_BOTTOM
+            },dimensions.width,dimensions.height);
+            return image
+            }).then(image => {
+                let file = `./upload/${req.files.file[i].filename}`
+                return image.write(file) // save
+              })
+        })
+        .catch((err) => {
+         console.log(err)
+        });
+    }}
+    }).then((s)=>{
+        res.send({"data":"jjjhj"})
+    })
+}
    
+
+
+exports.update_edit_atm_installation=(req,res)=>{
+    user_handling_activity_model.user_handling_activity_model.updateOne({"id":req.body.id},{
+        is_resolved:false,
+    }).then(()=>{
+        res.send({"data":"done"})
+    })
+}
+
+
+
+exports.delete_photo_by_user_before_photo=(req,res)=>{
+user_handling_activity_model.user_handling_activity_model.updateMany({"user_id":req.body.user_id,'task_id':req.body.task_id}, {'$pull': {'photo_before': {photo_id:req.body.photo_id}}}).then((e)=>{
+    res.send({"ok":"kdjk"})
+    
+        }) 
+
+
+
+}
+
+ 
+exports.delete_photo_by_user_after_photo=(req,res)=>{
+    user_handling_activity_model.user_handling_activity_model.updateMany({"user_id":req.body.user_id,'task_id':req.body.task_id}, {'$pull': {'photo_after': {photo_id:req.body.photo_id}}}).then((e)=>{
+        res.send({"ok":"kdjk"})
+        
+            }) 
+    
+}
+
+
+
+//////////////// admin get activity
+exports.admin_get_activity=(req,res)=>{
+    user_handling_activity_model.user_handling_activity_model.find({"user_id":req.body.user_id,'task_id':req.body.task_id}).then((e)=>{
+        res.send({"data":e})
+            }) 
+}

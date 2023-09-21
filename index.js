@@ -2,7 +2,7 @@ var express = require('express')
 var app = express()
 var cors = require('cors')
 
-
+var moment = require('moment')
 
 app.use(cors())
 
@@ -26,16 +26,28 @@ const add_activity = require('./controler/activity')
 const add_task = require('./controler/task')
 const add_admin = require('./controler/admin')
 const user_handling_activity= require('./controler/user_handling_activity_for_task')
-
-
+  
+app.use(express.static('./static'));
 ////////////////////// imported model for model
 const notification_model = require('./model/notification_manager')
 const task_model = require('./model/task')
 const user_model = require('./model/user')
 var cron = require('node-cron');
 require('dotenv').config()
+const puppeteer = require('puppeteer'); 
+const hbs = require('handlebars')
+const fs = require('fs-extra')
+const path = require('path')
+const add_notication = require('./controler/notification_manager')
+const user_hadling_activity_for_retrive_activity = require('./model/userhandlingactivity')
 
-
+hbs.registerHelper('ifEquals', function(arg1, arg2, options) {
+  return (arg1 == arg2) ? options.fn(this) : options.inverse(this);
+});
+hbs.registerHelper('formatTime', function (date, format) {
+  var mmnt = moment(date);
+  return mmnt.format(format);
+});
 
 app.get('/',(req,res)=>{
   res.send("iiuiu")
@@ -141,7 +153,7 @@ app.post('/userAuth',add_user.userLogin);  ////   for user login
 app.post('/retriveTaskforuser',add_task.userRetriveTask)   // for user retrive task(at main page)
 
 app.put('/notificationTokenUpdate',add_user.notificationTokenUpdate)   /// for token update each time when user login 
-
+app.put('/user_profile_update',cpUpload,add_user.userprofile_update)
 
 
 /////////////////// all action will be in this page 
@@ -158,13 +170,21 @@ app.put('/handle_not_ok',user_handling_activity.handle_not_ok)
 
 app.post('/retrivetaskallfor',add_task.userRetriveTaskall)
 
-  //app.post('/retrivenotification',)
+app.put('/update_atm_photo_and_data',cpUpload,user_handling_activity.update_photo_for_atm_after)
+app.put('/atm_edit',user_handling_activity.update_edit_atm_installation)
+app.put('/delete_phot_before',user_handling_activity.delete_photo_by_user_before_photo)
+app.put('/delete_phot_after',user_handling_activity.delete_photo_by_user_after_photo)
+
+
+app.post('/admin_get_activity',user_handling_activity.admin_get_activity)
+/////////// habdling for notification add  retrivve and deleted
+app.post('/retrive_notification',add_notication.retrivenotification)    //// for retrive notification
+ app.delete('/delete_notification',add_notication.deleteNotification)    /// delete  notification
 
 
 
-
-
-
+ //////////////////////////////////// update task 
+app.put('/update_task_user',add_task.update_task_by_user)
 
 
 
@@ -193,7 +213,9 @@ admin.initializeApp({
 
 
 const { v4: uuidv4 } = require('uuid');
-const tt =   cron.schedule('* */23 * * *', async() => {
+const tt =   cron.schedule('*/2 * * * *', async() => {
+
+  let date = new Date();
 
 await task_model.task_model.find({'task_status':'On Going'}).then((data)=>{
   for (let i = 0; i < data.length; i++) {
@@ -205,6 +227,7 @@ await task_model.task_model.find({'task_status':'On Going'}).then((data)=>{
         notification_desc:data[i].task_description,
         user_id:userdata.user_id,
         user_name:userdata.username,
+        date:date,
       })
  await add_notification.save().then((e)=>{}).then(async()=>{
   if( userdata.notification_token!==""){
@@ -224,10 +247,82 @@ await task_model.task_model.find({'task_status':'On Going'}).then((data)=>{
 })
 }})});
 
-tt.start();
+tt.stop();
 
 
 
+
+
+const compile = async function(templatename,data){
+  const filePath =path.join(process.cwd(),'htmlfile',`${templatename}.hbs`)
+
+  const html = await fs.readFile(filePath,'utf8')
+  return hbs.compile(html)(data)
+};
+
+
+
+
+app.post("/createInvoice",async(req,res)=>{
+let total  = 0;
+let is_replace = req.body.activityArray.filter((e)=>(e.is_replace==true));
+let is_repair = req.body.activityArray.filter((e)=>(e.is_repair==true));
+
+for (i = 0; i < is_replace.length; i++) {  
+  total += is_replace[i].component_cost;  
+  console.log(total)
+}
+
+for (i = 0; i < is_repair.length; i++) { 
+  total += is_repair[i].component_repaire_cost;  
+}
+
+console.log(total)
+
+
+
+
+const number = uuidv4();
+let  activityArray = null;
+(async () => {
+      try {
+       const browser = await puppeteer.launch(
+        {
+         executablePath: '/usr/bin/chromium-browser',
+          headless: 'new',
+          args: ['--no-sandbox']
+          // `headless: true` (default) enables old Headless;
+          // `headless: 'new'` enables new Headless;
+          // `headless: false` enables “headful” mode.
+        }  
+       );
+        const page = await browser.newPage();
+        const content = await compile('Bill',{
+          data:req.body.alldata,
+          arr:req.body.activityArray,
+          total:total
+        })
+        await page.setContent(content)
+        await page.pdf({
+          path:`report/${number}.pdf`,
+          format: 'A4',
+          printBackground:true
+        });
+      res.send({"path":number})
+        await browser.close(); 
+        //process.exit()
+      } catch (error) {
+        console.log(error)
+      }  
+    })();
+  
+  
+
+
+
+
+  })
+       
 
 
 

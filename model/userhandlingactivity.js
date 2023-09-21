@@ -33,6 +33,11 @@ current_ref:String,
 id:String,
 /////////////////////////////////////
 component:String,
+component_cost:Number,
+component_repaire_cost:Number,
+
+
+
 is_resolved:Boolean,
 ref:String,
 is_see_more:Boolean,

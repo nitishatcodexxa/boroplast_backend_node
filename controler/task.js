@@ -1,7 +1,7 @@
 const task_model = require('../model/task')
 const { v4: uuidv4 } = require('uuid');
 const jwt =require('jsonwebtoken')
-
+const moment = require('moment')
 
 
 
@@ -165,6 +165,18 @@ exports.userRetriveTask=(req,res)=>{
  
 exports.userRetriveTaskall=(req,res)=>{
     task_model.task_model.find({"task_assigned_user_id":req.body.user_id}).then((data)=>{
+        res.send({"data":data})
+    })
+}
+
+
+exports.update_task_by_user=(req,res)=>{
+    let m = new Date();
+    task_model.task_model.updateOne({"task_id":req.body.id},{
+  task_status:'Complete',
+  task_end_date:moment(new Date()).format('DD MMM YYYY'),
+  complete_task_location:req.body.location
+    }).then((data)=>{
         res.send({"data":data})
     })
 }

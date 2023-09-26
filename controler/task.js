@@ -2,6 +2,17 @@ const task_model = require('../model/task')
 const { v4: uuidv4 } = require('uuid');
 const jwt =require('jsonwebtoken')
 const moment = require('moment')
+const user_model = require('../model/user')
+const notification_model = require('../model/notification_manager')
+var admin = require("firebase-admin");
+var serviceAccount = require("../pppp-fa588-firebase-adminsdk-1732e-ef3f45b1eb.json");
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount),
+  databaseURL: "https://pppp-fa588-default-rtdb.firebaseio.com"
+});
+
+
+
 
 
 
@@ -41,16 +52,49 @@ const add_data_task = new task_model.task_model({
     complete_task_location:"",
     calloboration_user_name:req.body.callaboration_user_name,
     calloboration_user_id:req.body.callaboration_user_id,
-    task_end_date:null,
     latitude:req.body.latitude,
     longitude:req.body.longitude,
+    task_end_date:req.body.task_end_date,
+    cancel_date:req.body.cancel_date,
+    on_going_date:req.body.on_going_date,
+
 })
 add_data_task.save().then(()=>{
-    res.send({"data":"added"})
+    res.send({"data":"added"})   /////data saves
+}).then(()=>{  //// for sending notification
+    user_model.user_model.findOne({'user_id':req.body.user_id}).then(async(userdate)=>{
+        if(userdate.notification_token!==""){
+            try {
+                 await admin.messaging().sendMulticast({
+                tokens: [userdate.notification_token],
+                notification: {
+                  title: req.body.task_title,
+                  body: req.body.description,
+                  imageUrl: 'https://my-cdn.com/app-logo.png',
+                },
+              });
+            } catch (error) {
+                
+            }
+           
+        }
+
+    })
+}).then(()=>{
+const add_notifi = new notification_model.notification_model({
+    notification_id:uuidv4(),
+    notification_title:req.body.task_title,
+    notification_desc:req.body.description,
+    user_id:req.body.user_id,
+    user_name:req.body.user_name,
+    date:Date(),
 })
 
+add_notifi.save().then(()=>{
+})
 
-    }})}
+})
+ }})}
 }
 
 
@@ -142,11 +186,48 @@ task_model.task_model.updateMany({"task_id":req.body.task_id},{
     calloboration_user_id:req.body.callaboration_user_id,
     latitude:req.body.latitude,
     longitude:req.body.longitude,
+    task_end_date:req.body.task_end_date,
+    cancel_date:req.body.cancel_date,
+    on_going_date:req.body.on_going_date,
+
 
 }).then((s)=>{
 res.send({"data":"updated"})
-})
+}).then(()=>{
+    user_model.user_model.findOne({'user_id':req.body.user_id}).then(async(userdate)=>{
+        if(userdate.notification_token!==''){
 
+            try {
+                 await admin.messaging().sendMulticast({
+                tokens: [userdate.notification_token],
+                notification: {
+                  title: req.body.task_title + '   Task Updated',
+                  body: req.body.description,
+                  imageUrl: 'https://my-cdn.com/app-logo.png',
+                },
+              });
+            } catch (error) {
+                
+            }
+           
+        }
+
+    })
+
+}).then(()=>{
+    const add_notifi = new notification_model.notification_model({
+        notification_id:uuidv4(),
+        notification_title:req.body.task_title,
+        notification_desc:req.body.description,
+        user_id:req.body.user_id,
+        user_name:req.body.user_name,
+        date:Date(),
+    })
+    
+    add_notifi.save().then(()=>{
+    })
+
+})
 
     }})}
 }
@@ -157,7 +238,7 @@ res.send({"data":"updated"})
 ///////////////////// for user section
 
 exports.userRetriveTask=(req,res)=>{
-    task_model.task_model.find({"task_assigned_user_id":req.body.user_id,'task_status':'On Going'}).then((data)=>{
+    task_model.task_model.find({"task_assigned_user_id":req.body.user_id,'task_status':'To do'}).then((data)=>{
         res.send({"data":data})
     })
 }
@@ -180,3 +261,20 @@ exports.update_task_by_user=(req,res)=>{
         res.send({"data":data})
     })
 }
+
+
+exports.update_task_for_ongoing_report=(req,res)=>{
+    console.log(req.body)
+task_model.task_model.findOne({"task_id":req.body.id}).then((d)=>{
+if(d.on_going_date==null){
+        let m = new Date();
+    task_model.task_model.updateOne({"task_id":req.body.id},{
+  task_status:'On Going',
+  on_going_date:moment(new Date()).format('DD MMM YYYY'),
+    }).then((data)=>{
+        res.send({"data":data})
+    })
+}else{
+    res.send({"dta":"ok"})
+}
+})}

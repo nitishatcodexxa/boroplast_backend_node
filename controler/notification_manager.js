@@ -8,6 +8,7 @@ const notification_model = require('../model/notification_manager')
  }
 
 exports.deleteNotification = (req,res)=>{
+    console.log(req.body)
     notification_model.notification_model.deleteOne({"notification_id":req.body.id}).then((detelete)=>{
         res.send({"deleted":"deleted"})
     })

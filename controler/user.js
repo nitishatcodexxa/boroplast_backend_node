@@ -237,15 +237,22 @@ res.send({'data':"ok"})
  exports.userprofile_update=(req,res)=>{
 
     console.log(req.body)
-    console.log(req.files)
+ 
     if(req.files.file && req.files.file.length){
+           console.log(req.files.file[0].filename)
+           console.log(req.files)
         user_model.user_model.updateOne({"user_id":req.body.user_id},{
             username:req.body.username,
             password:req.body.password,
             phone:req.body.phone,
             profile_url:req.files.file[0].filename,
+
         }).then((s)=>{
-            res.send({"data":s})
+            user_model.user_model.findOne({"user_id":req.body.user_id}).then((data)=>{
+                 res.send({"data":data})
+            })
+           
+           
         })
     }else{
         user_model.user_model.updateOne({"user_id":req.body.user_id},{
@@ -253,7 +260,10 @@ res.send({'data':"ok"})
             password:req.body.password,
             phoneno:req.body.phone,
         }).then((s)=>{
-            res.send({"data":s})
+            user_model.user_model.findOne({"user_id":req.body.user_id}).then((data)=>{
+                res.send({"data":data})
+           })
+          
         })
     }
         

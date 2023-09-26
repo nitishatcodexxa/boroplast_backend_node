@@ -26,7 +26,7 @@ const add_activity = require('./controler/activity')
 const add_task = require('./controler/task')
 const add_admin = require('./controler/admin')
 const user_handling_activity= require('./controler/user_handling_activity_for_task')
-  
+const { v4: uuidv4 } = require('uuid');
 app.use(express.static('./static'));
 ////////////////////// imported model for model
 const notification_model = require('./model/notification_manager')
@@ -186,68 +186,10 @@ app.post('/retrive_notification',add_notication.retrivenotification)    //// for
  //////////////////////////////////// update task 
 app.put('/update_task_user',add_task.update_task_by_user)
 
+app.put('/update_task_for_user_onging_report',add_task.update_task_for_ongoing_report)
 
-
-
+app.put('/ddjkjkfjfkjkj',user_handling_activity.update_edit_atm_for_vvvvvv)
 ///////////////////////////// handling notification         /      / ////////////////////////////////////
-
-
-var admin = require("firebase-admin");
-
-
-var serviceAccount = require("./pppp-fa588-firebase-adminsdk-1732e-ef3f45b1eb.json");
-
-admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount),
-  databaseURL: "https://pppp-fa588-default-rtdb.firebaseio.com"
-});
-
-
-
-
-
-
-
-
-
-
-
-const { v4: uuidv4 } = require('uuid');
-const tt =   cron.schedule('*/2 * * * *', async() => {
-
-  let date = new Date();
-
-await task_model.task_model.find({'task_status':'On Going'}).then((data)=>{
-  for (let i = 0; i < data.length; i++) {
-    user_model.user_model.findOne({'user_id':data[i].task_assigned_user_id}).then(async(userdata)=>{
-      if(userdata.notification_token!==""){
-      const add_notification = new notification_model.notification_model({
-        notification_id:uuidv4(),
-        notification_title:data[i].task_title,
-        notification_desc:data[i].task_description,
-        user_id:userdata.user_id,
-        user_name:userdata.username,
-        date:date,
-      })
- await add_notification.save().then((e)=>{}).then(async()=>{
-  if( userdata.notification_token!==""){
-    await admin.messaging().sendMulticast({
-      tokens: [userdata.notification_token],
-      notification: {
-        title: data[i].task_title,
-        body: data[i].task_description,
-        imageUrl: 'https://my-cdn.com/app-logo.png',
-      },
-    });
-  }
-})
-
-      }
-
-})
-}})});
-
-tt.stop();
 
 
 
@@ -261,9 +203,13 @@ const compile = async function(templatename,data){
 };
 
 
-
+   
 
 app.post("/createInvoice",async(req,res)=>{
+console.log(req.body.alldata)
+ let is_maintainance = req.body.alldata.is_installation;
+
+
 let total  = 0;
 let is_replace = req.body.activityArray.filter((e)=>(e.is_replace==true));
 let is_repair = req.body.activityArray.filter((e)=>(e.is_repair==true));
@@ -289,8 +235,8 @@ let  activityArray = null;
        const browser = await puppeteer.launch(
         {
          executablePath: '/usr/bin/chromium-browser',
-          headless: 'new',
-          args: ['--no-sandbox']
+         headless: 'new',
+         args: ['--no-sandbox']
           // `headless: true` (default) enables old Headless;
           // `headless: 'new'` enables new Headless;
           // `headless: false` enables “headful” mode.
@@ -300,7 +246,8 @@ let  activityArray = null;
         const content = await compile('Bill',{
           data:req.body.alldata,
           arr:req.body.activityArray,
-          total:total
+          total:total,
+          is_maintainance:is_maintainance
         })
         await page.setContent(content)
         await page.pdf({
@@ -324,6 +271,62 @@ let  activityArray = null;
   })
        
 
+
+
+  app.post("/createInvoiceforcorpporate",async(req,res)=>{
+    let is_maintainance = req.body.alldata.is_installation;
+
+
+    let total  = 0;
+    let is_replace = req.body.activityArray.filter((e)=>(e.is_replace==true));
+    let is_repair = req.body.activityArray.filter((e)=>(e.is_repair==true));
+    
+    for (i = 0; i < is_replace.length; i++) {  
+      total += is_replace[i].component_cost;  
+      console.log(total)
+    }
+    
+    for (i = 0; i < is_repair.length; i++) { 
+      total += is_repair[i].component_repaire_cost;  
+    }
+    
+    console.log(total)
+    const number = uuidv4();
+    let  activityArray = null;
+    (async () => {
+          try {
+           const browser = await puppeteer.launch(
+            {
+            executablePath: '/usr/bin/chromium-browser',
+             headless: 'new',
+             args: ['--no-sandbox']
+              // `headless: true` (default) enables old Headless;
+              // `headless: 'new'` enables new Headless;
+              // `headless: false` enables “headful” mode.
+            }  
+           );
+            const page = await browser.newPage();
+            const content = await compile('Billforco',{
+              data:req.body.alldata,
+              arr:req.body.activityArray,
+              total:total, 
+             is_maintainance:is_maintainance
+            })
+            await page.setContent(content)
+            await page.pdf({
+              path:`report/${number}.pdf`,
+              format: 'A4', 
+              printBackground:true
+            });
+          res.send({"path":number})
+            await browser.close(); 
+            //process.exit()
+          } catch (error) {
+            console.log(error)
+          }  
+        })();
+      })
+           
 
 
 

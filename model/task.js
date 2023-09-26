@@ -20,7 +20,7 @@ const task_schema = new Schema({
     task_address:String,
     task_assigned_user_name:String,
     task_assigned_user_id:String,
-    task_execution_date:Date,
+    task_execution_date:Date, 
     task_execution_time:String,
     task_status:String,
     task_location:String,
@@ -31,6 +31,9 @@ const task_schema = new Schema({
     task_end_date:Date,
     latitude:String,
     longitude:String,
+
+    cancel_date:Date,
+    on_going_date:Date,
 })
 
 exports.task_model = new mongoose.model('task',task_schema)

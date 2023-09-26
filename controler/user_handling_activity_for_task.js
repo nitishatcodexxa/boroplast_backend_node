@@ -4,7 +4,7 @@ const { v4: uuidv4 } = require('uuid');
 const product_model = require('../model/product')
 const activity_model = require('../model/activity')
 var Jimp = require("jimp");
-var moment = require('moment')
+var moment = require('moment')  
 const sizeOf = require('image-size')
 //////////// fist get data about task
 
@@ -218,7 +218,7 @@ exports.update_photo_for_atm_after=(req,res)=>{
 
     user_handling_activity_model.user_handling_activity_model.updateOne({"id":req.body.id},{
         is_resolved:req.body.is_resolved,
-        current_ref:req.body.current_ref,
+        current_ref:'2',
         ref:req.body.ref,
         text:'ok',
         status:true,  
@@ -259,11 +259,22 @@ exports.update_photo_for_atm_after=(req,res)=>{
 
 exports.update_edit_atm_installation=(req,res)=>{
     user_handling_activity_model.user_handling_activity_model.updateOne({"id":req.body.id},{
-        is_resolved:false,
+      //  is_resolved:false,
+        current_ref:''
     }).then(()=>{
         res.send({"data":"done"})
     })
 }
+
+
+exports.update_edit_atm_for_vvvvvv=(req,res)=>{
+    user_handling_activity_model.user_handling_activity_model.updateOne({"id":req.body.id},{
+     is_resolved:req.body.value,
+    }).then(()=>{
+        res.send({"data":"done"})
+    })
+}
+
 
 
 
@@ -288,7 +299,7 @@ exports.delete_photo_by_user_after_photo=(req,res)=>{
 
 
 
-//////////////// admin get activity
+//////////////// admin get activity  and user      dont use here security
 exports.admin_get_activity=(req,res)=>{
     user_handling_activity_model.user_handling_activity_model.find({"user_id":req.body.user_id,'task_id':req.body.task_id}).then((e)=>{
         res.send({"data":e})

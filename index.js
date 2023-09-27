@@ -202,13 +202,13 @@ const compile = async function(templatename,data){
   return hbs.compile(html)(data)
 };
 
-
    
+      
 
 app.post("/createInvoice",async(req,res)=>{
 console.log(req.body.alldata)
  let is_maintainance = req.body.alldata.is_installation;
-
+ 
 
 let total  = 0;
 let is_replace = req.body.activityArray.filter((e)=>(e.is_replace==true));
@@ -234,12 +234,14 @@ let  activityArray = null;
       try {
        const browser = await puppeteer.launch(
         {
-         executablePath: '/usr/bin/chromium-browser',
-         headless: 'new',
-         args: ['--no-sandbox']
-          // `headless: true` (default) enables old Headless;
-          // `headless: 'new'` enables new Headless;
-          // `headless: false` enables “headful” mode.
+        // executablePath: '/usr/bin/chromium-browser',
+        // headless: 'new',
+        // args: ['--no-sandbox']
+        headless: false ,
+        slowMo: 500,
+        //(default) enables old Headless;
+          // `headless: 'new'`   //enables new Headless; 
+          // `headless: false`  //enables “headful” mode.
         }  
        );
         const page = await browser.newPage();
@@ -257,7 +259,7 @@ let  activityArray = null;
         });
       res.send({"path":number})
         await browser.close(); 
-        //process.exit()
+        
       } catch (error) {
         console.log(error)
       }  
@@ -297,9 +299,12 @@ let  activityArray = null;
           try {
            const browser = await puppeteer.launch(
             {
-            executablePath: '/usr/bin/chromium-browser',
-             headless: 'new',
-             args: ['--no-sandbox']
+          //  executablePath: '/usr/bin/chromium-browser',
+           //  headless: 'new',
+            // args: ['--no-sandbox']
+
+            headless: false ,
+            slowMo: 250,
               // `headless: true` (default) enables old Headless;
               // `headless: 'new'` enables new Headless;
               // `headless: false` enables “headful” mode.
@@ -320,13 +325,63 @@ let  activityArray = null;
             });
           res.send({"path":number})
             await browser.close(); 
-            //process.exit()
+            
           } catch (error) {
             console.log(error)
           }  
         })();
       })
            
+
+
+
+      app.post("/billforatm",async(req,res)=>{
+        
+      
+        const number = uuidv4();
+       
+        (async () => {
+              try {
+               const browser = await puppeteer.launch(
+                {
+                  headless: false ,
+                  slowMo: 250,
+               // executablePath: '/usr/bin/chromium-browser',
+               //  headless: 'new',
+               //  args: ['--no-sandbox']
+                  // `headless: true` (default) enables old Headless;
+                  // `headless: 'new'` enables new Headless;
+                  // `headless: false` enables “headful” mode.
+                }  
+               );
+                const page = await browser.newPage();
+                const content = await compile('Billforatm',{
+                  data:req.body.alldata,
+                  arr:req.body.activityArray, 
+                
+                })
+                await page.setContent(content)
+                await page.pdf({
+                  path:`report/${number}.pdf`,
+                  format: 'A4', 
+                  printBackground:true
+                });
+              res.send({"path":number})
+                await browser.close(); 
+                
+              } catch (error) {
+                console.log(error)
+              }  
+            })();
+          })
+            
+
+
+
+
+
+
+
 
 
 

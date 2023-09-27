@@ -205,7 +205,7 @@ res.send({'data':"ok"})
 
     exports.userLogin = (req,res)=>{
         
-        user_model.user_model.findOne({"emailid":req.body.username,"password":req.body.password}).then((s)=>{
+        user_model.user_model.findOne({"emailid":req.body.username.toLowerCase(),"password":req.body.password}).then((s)=>{
             if(s!==null){
                 jwt.sign({ user_name:s.emailid, password:s.password},process.env.SECKRET_KEY, function(err, token) {
                     if(!err){

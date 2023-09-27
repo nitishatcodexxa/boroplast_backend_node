@@ -15,7 +15,7 @@ exports.add_admin=(req,res)=>{
 
 exports.cheak_admin_exist=async(req,res)=>{
   
-   await admin_mod.admin_model.findOne({"user_name":req.body.user_name,"password":req.body.password}).then((ss)=>{
+   await admin_mod.admin_model.findOne({"user_name":req.body.user_name.toLowerCase(),"password":req.body.password}).then((ss)=>{
 if(ss!==null){
      jwt.sign({ user_name:ss.user_name, password:ss.password},process.env.SECKRET_KEY, function(err, token) {
          if(!err){

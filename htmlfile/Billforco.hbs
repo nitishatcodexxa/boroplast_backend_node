@@ -25,14 +25,14 @@
           <div class="cs-invoice_left">
             <b class="cs-primary_color"><span class="paddingleft"> Title :</span>{{data.task_title}}</b><br>
                      
-{{#ifEquals is_maintainance false}} 
+
             <b class="cs-primary_color"><span class="paddingleft">Unit Name :</span>{{data.unit_name}}</b><br>
-        {{/ifEquals}}
+        
 
             <b class="cs-primary_color"><span class="paddingleft">Address :</span>{{data.task_address}}</b><br>
-          {{#ifEquals is_maintainance false}} 
+       
             <b class="cs-primary_color"><span class="paddingleft">Corporate :</span>{{data.corporate_name}}</b><br>
-              {{/ifEquals}}
+             
           </div>
           <div class="cs-invoice_right cs-text_right">
             <b class="cs-primary_color"><span class="paddingleft">Report Id:</span> 0011254585</b><br>
@@ -63,22 +63,22 @@
 
 
  
- {{#ifEquals is_maintainance false}} 
+
  
    <li><span class="point-name">Product: </span> {{component}}</li>
-{{/ifEquals}}
+
   <li><span class="point-name">Remark: </span> {{remark}}</li>
 {{#ifEquals is_repair true}} 
- {{#ifEquals is_maintainance false}} 
+
  <li><span class="point-name">Type: </span>Repair</li>
- {{/ifEquals}}
+
 {{/ifEquals}}
 
 
 {{#ifEquals is_replace true}}
- {{#ifEquals is_maintainance false}} 
+
  <li><span class="point-name">Type: </span>Replace</li>
-  {{/ifEquals}}
+  
 
 {{/ifEquals}}
 
@@ -88,7 +88,7 @@
 
 
 {{#ifEquals is_resolved true}} 
- {{#ifEquals is_maintainance false}} 
+
             <li>
               <b class="cs-primary_color"><span class="paddingleft point-name"><span>Before Photos :</span> 
                 <ul id="detail-list" style="list-style-type: none;">
@@ -105,7 +105,7 @@
                 </ul>  
               </b> 
             </li>
-{{/ifEquals}}
+
 {{/ifEquals}}
 
 

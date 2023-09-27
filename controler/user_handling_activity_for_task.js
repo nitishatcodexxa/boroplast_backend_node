@@ -119,10 +119,6 @@ user_handling_activity_model.user_handling_activity_model.updateOne({"id":req.bo
 
 
 exports.update_photo_for_level_two=(req,res)=>{
-console.log(req.body)
-console.log(req.files)
-
-
     user_handling_activity_model.user_handling_activity_model.updateOne({"id":req.body.id},{
         is_resolved:req.body.is_resolved,
         current_ref:req.body.current_ref,
@@ -185,12 +181,13 @@ exports.handle_edit=(req,res)=>{
 
 
 exports.handle_ok=(req,res)=>{
+    
     user_handling_activity_model.user_handling_activity_model.updateOne({"id":req.body.id},{
      text:'ok',
      status:true,  
      ok_color:'#2cbd96',
      not_ok_color:'#c9c9c9',
-     is_see_more:true,
+     is_see_more:req.body.is_resolved,
      current_ref:''
     }).then(()=>{
         res.send({"data":"done"})

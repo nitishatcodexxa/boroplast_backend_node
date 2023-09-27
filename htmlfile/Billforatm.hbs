@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html class="no-js" lang="en">
+ 
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+ 
+  <!-- Site Title -->
+  <title>Invoice</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+  <link rel="stylesheet" href="http://admin.codexxa.co.in/css/style.css">
+</head>
+
+<body>
+  <div >
+    <div class="cs-invoice cs-style1">
+      <div class="cs-invoice_in" id="download_section">
+        <div class="cs-invoice_head cs-type1 cs-mb25" style="justify-content: center">
+          <div class="cs-invoice_right cs-text_right">
+            <div class="cs-logo cs-mb5"><img src="https://admin.codexxa.co.in/img/logo.png" alt="Logo"></div>
+          </div> 
+        </div>
+        <div class="cs-invoice_head cs-mb10">
+          <div class="cs-invoice_left">
+            <b class="cs-primary_color"><span class="paddingleft"> Title :</span>{{data.task_title}}</b><br>
+                    
+            <b class="cs-primary_color"><span class="paddingleft">Address :</span>{{data.task_address}}</b><br>
+          
+          </div>
+          <div class="cs-invoice_right cs-text_right">
+            <b class="cs-primary_color"><span class="paddingleft">Report Id:</span> 0011254585</b><br>
+            <b class="cs-primary_color"><span class="paddingleft">Exe. Date :</span>{{formatTime  data.task_execution_date "MM-DD-YYYY"}}</b><br>
+            <b class="cs-primary_color"><span class="paddingleft">Completion Date:</span>{{formatTime  data.task_end_date  "MM-DD-YYYY"}}</b><br>
+            <b class="cs-primary_color"><span class="paddingleft">Attendant Name :</span>{{data.task_assigned_user_name}}</b><br><br>
+          </div>
+        </div>
+        <hr>
+       
+<div>
+{{#arr}}
+  <div>
+       <ul class="main-ul" style="list-style-type: none;">
+       
+        <li>  {{@index}}). <span class="point-name">{{activity_name}}</span>
+          <ul style="list-style-type: none;">
+ <li ><span class="point-name">Status:</span> <span class="badge badge-primary">Installed</span> </li>
+ <li><span class="point-name">Remark: </span> {{remark}}</li>
+ 
+
+            <li>
+              <b class="cs-primary_color"><span class="paddingleft point-name">After Photos :</span> 
+                <ul id="detail-list" style="list-style-type: none;">
+                   <div class="row" style="width: fit-content;">
+                {{#photo_after}}
+    <div class="col-sm-4">
+       <li><img src="https://admin.codexxa.co.in/{{photo_name}}" alt=""></li>
+    </div>
+   
+{{/photo_after}}
+  </div>
+                </ul>
+              </b> 
+            </li>
+          
+          </ul>
+       
+      </li>
+<hr>
+    <hr>
+    <li>
+     
+     
+  </li>
+       </ul>
+        </div>
+
+{{/arr}}
+
+</div>
+
+        <div class="cs-table cs-style1">
+          <div class="cs-invoice_footer">
+            <div class="cs-right_footer">
+            </div>
+          </div>
+           
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

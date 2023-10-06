@@ -1,165 +1,198 @@
 <!DOCTYPE html>
-<html class="no-js" lang="en">
- 
+<html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta http-equiv="x-ua-compatible" content="ie=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
- 
-  <!-- Site Title -->
-  <title>Invoice</title>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-  <link rel="stylesheet" href="http://localhost:5000/css/style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invoice</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
 </head>
 
+
+<style>
+
+.header_flag{
+    height: 80px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    
+}
+
+
+.mm_oo{
+    border: 70px;
+    border-color: rgb(184, 48, 48);
+    width:'100%';
+   min-height: 100px;
+}
+
+
+.header_body{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+
+}
+
+.row_one{
+    display: flex;
+    flex-direction: column;
+}
+
+.description{
+    display: flex;
+    flex-direction: column;
+    margin-top: 20px;
+    margin-left: 10px;
+}
+
+h6{
+    font-size: 14px;
+    color: black;
+}
+
+h2{
+    font-size: 16px;
+    text-decoration: underline;
+    margin-left: 10px;
+}
+
+
+.border_add{
+    border: 1px;
+    border-color: #ebebf5;
+    border-radius: 10px;
+    margin-top: 10px;
+    border-style:solid;
+}
+
+
+
+</style>
+
+
+
+
+
 <body>
-  <div >
-    <div class="cs-invoice cs-style1">
-      <div class="cs-invoice_in" id="download_section">
-        <div class="cs-invoice_head cs-type1 cs-mb25" style="justify-content: center">
-          <div class="cs-invoice_right cs-text_right">
-            <div class="cs-logo cs-mb5"><img src="http://localhost:5000/img/logo.png" alt="Logo"></div>
-          </div> 
-        </div>
-        <div class="cs-invoice_head cs-mb10">
-          <div class="cs-invoice_left">
-            <b class="cs-primary_color"><span class="paddingleft"> Title :</span>{{data.task_title}}</b><br>
-                     
-
-            <b class="cs-primary_color"><span class="paddingleft">Unit Name :</span>{{data.unit_name}}</b><br>
-      
-
-            <b class="cs-primary_color"><span class="paddingleft">Address :</span>{{data.task_address}}</b><br>
-         
-            <b class="cs-primary_color"><span class="paddingleft">Corporate :</span>{{data.corporate_name}}</b><br>
-            
-          </div>
-          <div class="cs-invoice_right cs-text_right">
-            <b class="cs-primary_color"><span class="paddingleft">Report Id:</span> 0011254585</b><br>
-            <b class="cs-primary_color"><span class="paddingleft">Exe. Date :</span>{{formatTime  data.task_execution_date "MM-DD-YYYY"}}</b><br>
-            <b class="cs-primary_color"><span class="paddingleft">Completion Date:</span>{{formatTime  data.task_end_date  "MM-DD-YYYY"}}</b><br>
-            <b class="cs-primary_color"><span class="paddingleft">Attendant Name :</span>{{data.task_assigned_user_name}}</b><br><br>
-            
-          </div>
-        </div>
-        <hr>
-        <h4>Activity Overview</h4>
-<div>
-{{#arr}}
-  <div>
-       <ul class="main-ul" style="list-style-type: none;">
-       
-        <li>  {{@index}}). <span class="point-name">{{activity_name}}</span>
-          <ul style="list-style-type: none;">
-           
-{{#ifEquals is_resolved false}} 
- <li ><span class="point-name">Status:</span> <span class="badge badge-primary">OK</span> </li>
-{{/ifEquals}}
-
-
-{{#ifEquals is_resolved true}} 
- 
-<li><span class="point-name">Status: </span> <span class="badge badge-success" style="margin-bottom: 20px;">Resolved</span></li>
-
-
- 
-
- 
-   <li><span class="point-name">Product: </span> {{component}}</li>
-
-  <li><span class="point-name">Remark: </span> {{remark}}</li>
-{{#ifEquals is_repair true}} 
-
- <li><span class="point-name">Type: </span>Repair</li>
-
-{{/ifEquals}}
-
-
-{{#ifEquals is_replace true}}
-
- <li><span class="point-name">Type: </span>Replace</li>
-
-{{/ifEquals}}
+    <div class="container">
+  <div class="header_flag">
+<img src="https://admin.codexxa.co.in/img/logo.png"/>
+  </div>  
+<br/>
 
 
 
-{{/ifEquals}}
-
-
-{{#ifEquals is_resolved true}} 
-
-            <li>
-              <b class="cs-primary_color"><span class="paddingleft point-name"><span>Before Photos :</span> 
-                <ul id="detail-list" style="list-style-type: none;">
-              
-              <div class="row" style="width: fit-content;">
-                {{#photo_before}}
-    <div class="col-sm-4">
-       <li><img src="http://localhost:5000/{{photo_name}}" alt=""></li>
+<div class="header_body">
+    <div class="col_one">
+<h6></h6>
+<h6>Title : {{data.task_title}}</h6>
+<h6>Address : {{data.task_address}}</h6>
+<h6>Unit Name : {{data.unit_name}}</h6>
+<h6>Corporate : {{data.corporate_name}}</h6>
     </div>
-   
-{{/photo_before}}
-  </div>
+
+<div class="col_one">
+<h6>Report Id: 0011254585</h6>
+<h6>Exe. Date :  {{formatTime  data.task_execution_date "MM-DD-YYYY"}}</h6>
+<h6>Completion Date: {{formatTime  data.task_end_date  "MM-DD-YYYY"}}</h6>
+<h6>Attendant Name : {{data.task_assigned_user_name}}</h6>
   
-                </ul>  
-              </b> 
-            </li>
-
-{{/ifEquals}}
-
-
-
-{{#ifEquals is_resolved true}} 
-            <li>
-              <b class="cs-primary_color"><span class="paddingleft point-name">After Photos :</span> 
-                <ul id="detail-list" style="list-style-type: none;">
-                   <div class="row" style="width: fit-content;">
-                {{#photo_after}}
-    <div class="col-sm-4">
-       <li><img src="http://localhost:5000/{{photo_name}}" alt=""></li>
-    </div>
-   
-{{/photo_after}}
-  </div>
-                </ul>
-              </b> 
-            </li>
-            {{/ifEquals}}
-          </ul>
-         {{#ifEquals is_resolved true}} 
-
-
-{{#ifEquals is_repair true}} 
- <li><span class="point-name">Expense Cost: <span class="Expenses-cost"><strong>{{component_repaire_cost}}</strong></span> </li>
- 
-{{/ifEquals}}
-
-{{#ifEquals is_replace true}}
- <li><span class="point-name">Expense Cost: <span class="Expenses-cost"><strong>{{component_cost}}</strong></span> </li>
-{{/ifEquals}}
-      {{/ifEquals}} 
-      </li>
-<hr>
-    <hr>
-    <li>
-     
-     
-  </li>
-       </ul>
-        </div>
-
-{{/arr}}
+</div>
 
 </div>
 
-        <div class="cs-table cs-style1">
-          <div class="cs-invoice_footer">
-            <div class="cs-right_footer">
-              <table>
+
+
+
+
+
+
+
+
+{{#arr}}
+<div class="border_add">
+{{#ifEquals is_resolved false}} 
+    <div class="description">
+<h6>name : {{activity_name}}</h6>
+<h6>status : ok</h6>
+    </div>
+{{/ifEquals}}
+
+{{#ifEquals is_resolved true}} 
+
+ <div class="description">
+<h6>name : {{activity_name}}</h6>
+
+{{#ifEquals is_repair true}} 
+<h6>status : Repair</h6>
+{{/ifEquals}}
+
+{{#ifEquals is_replace true}}
+<h6>status : Replace</h6>
+{{/ifEquals}}
+<h6>component :  {{component}}</h6>
+<h6>Remark :  {{remark}}</h6>
+    </div>
+
+
+<div >
+  <h2>Before photo</h2>
+<div class="row">
+       {{#photo_before}}
+      <div class="col-sm-4" >
+        <img src="https://admin.codexxa.co.in/{{photo_name}}" style="height: 300px; width:100%; margin:5px; "/>
+    </div>
+       {{/photo_before}}
+    </div>
+<h2>After photo</h2>
+    <div class="row">
+       {{#photo_after}}
+      <div class="col-sm-4" >
+        <img src="https://admin.codexxa.co.in/{{photo_name}}" style="height: 300px; width:100%; margin:5px; "/>
+    </div>
+       {{/photo_after}}
+    </div>
+{{#ifEquals is_repair true}} 
+<h6 style="margin-top: 20px;">cost : {{component_repaire_cost}}</h6>
+{{/ifEquals}}
+
+{{#ifEquals is_replace true}}
+<h6 style="margin-top: 20px;">cost : {{component_cost}}</h6>
+{{/ifEquals}}
+
+</div>
+ {{/ifEquals}}
+</div>
+{{/arr}}
+
+
+
+
+
+
+
+
+<br/>
+<br/>
+
+
+<div class="cs-table cs-style1" >
+          <div class="cs-invoice_footer" style="display: -webkit-box;
+          display: -ms-flexbox;
+          display: flex;">
+            <div class="cs-right_footer" style="width: 100%;">
+              <table style="    margin-top: -1px;    width: 100%;
+              border-collapse: collapse;    border: 1px solid;">
                 <tbody>
-                  <tr class="cs-border_none cs-focus_bg">
-                    <td class="cs-width_9 cs-border_top_0 cs-bold cs-f16 cs-primary_color">Total expense for this unit inspection</td>
-                    <td class="cs-width_3 cs-border_top_0 cs-bold cs-f16 cs-primary_color   cs-text_right">Rs.{{total}}</td>
+                  <tr class="cs-border_none cs-focus_bg" style="    border: none;background: #f6f6f6;">
+                    <td class="cs-width_9 cs-border_top_0 cs-bold cs-f16 cs-primary_color" style="    border-top: 0;    color: #111111;width: 75%;font-weight: 700;border: 1px solid;padding: 10px 15px;
+                    line-height: 1.55em;">Total expense for this unit inspection</td>
+                    <td class="cs-width_3 cs-border_top_0 cs-bold cs-f16 cs-primary_color   cs-text_right" style="border-top: 0;    text-align: right;    color: #111111;    width: 25%;    font-weight: 700;    font-size: 16px;    border: 1px solid;    padding: 10px 15px;
+                    line-height: 1.55em;">Rs.{{total}}</td>
                   </tr>
                 </tbody>
               </table>
@@ -167,8 +200,15 @@
           </div>
            
         </div>
-      </div>
-    </div>
-  </div>
+
+
+  
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
 </body>
 </html>
+
+
+
+           
+           

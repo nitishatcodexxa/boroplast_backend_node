@@ -25,22 +25,26 @@ const add_unit = require('./controler/unitmanagement')
 const add_activity = require('./controler/activity')
 const add_task = require('./controler/task')
 const add_admin = require('./controler/admin')
+const path = require('path')
 const user_handling_activity= require('./controler/user_handling_activity_for_task')
-const { v4: uuidv4 } = require('uuid');
+const { v4: uuidv4 } = require('uuid'); 
+
 app.use(express.static('./static'));
+
 ////////////////////// imported model for model
 const notification_model = require('./model/notification_manager')
 const task_model = require('./model/task')
 const user_model = require('./model/user')
 var cron = require('node-cron');
-require('dotenv').config()
+require('dotenv').config() 
 const puppeteer = require('puppeteer'); 
 const hbs = require('handlebars')
 const fs = require('fs-extra')
-const path = require('path')
+
 const add_notication = require('./controler/notification_manager')
 const user_hadling_activity_for_retrive_activity = require('./model/userhandlingactivity')
-
+const stock = require('./controler/stock')
+const { Console } = require('console')
 hbs.registerHelper('ifEquals', function(arg1, arg2, options) {
   return (arg1 == arg2) ? options.fn(this) : options.inverse(this);
 });
@@ -49,10 +53,11 @@ hbs.registerHelper('formatTime', function (date, format) {
   return mmnt.format(format);
 });
 
+/*
 app.get('/',(req,res)=>{
   res.send("iiuiu")
 })
-
+*/
 
 try {
  mongoose.connect(urt_data.url)
@@ -72,7 +77,7 @@ const storage = multer.diskStorage({
 })
 
 const upload = multer({ storage: storage })
-const cpUpload = upload.fields([{ name:'file', maxCount: 5 }])
+const cpUpload = upload.fields([{ name:'file', maxCount: 50 }])
 
 
 
@@ -192,6 +197,13 @@ app.put('/ddjkjkfjfkjkj',user_handling_activity.update_edit_atm_for_vvvvvv)
 ///////////////////////////// handling notification         /      / ////////////////////////////////////
 
 
+/////////////////////// add stock
+
+app.post('/addstock',stock.add_stock_or_update)   /// for stock management and update
+app.post('/retrive_stock',stock.retrive_stock)
+app.delete('/delete_stock',stock.delete_stock)
+app.put('/update_quentity',stock.update_quentity)
+app.post('/retrive_updated_data',stock.retrive_update_value)
 
 
 
@@ -234,11 +246,11 @@ let  activityArray = null;
       try {
        const browser = await puppeteer.launch(
         {
-        // executablePath: '/usr/bin/chromium-browser',
-        // headless: 'new',
-        // args: ['--no-sandbox']
-        headless: false ,
-        slowMo: 500,
+         executablePath: '/usr/bin/chromium-browser',
+         headless: 'new',
+         args: ['--no-sandbox']
+       // headless: false ,
+       // slowMo: 500,
         //(default) enables old Headless;
           // `headless: 'new'`   //enables new Headless; 
           // `headless: false`  //enables “headful” mode.
@@ -299,12 +311,12 @@ let  activityArray = null;
           try {
            const browser = await puppeteer.launch(
             {
-          //  executablePath: '/usr/bin/chromium-browser',
-           //  headless: 'new',
-            // args: ['--no-sandbox']
+           executablePath: '/usr/bin/chromium-browser',
+             headless: 'new',
+             args: ['--no-sandbox']
 
-            headless: false ,
-            slowMo: 250,
+           // headless: false ,
+           /// slowMo: 250,
               // `headless: true` (default) enables old Headless;
               // `headless: 'new'` enables new Headless;
               // `headless: false` enables “headful” mode.
@@ -344,11 +356,11 @@ let  activityArray = null;
               try {
                const browser = await puppeteer.launch(
                 {
-                  headless: false ,
-                  slowMo: 250,
-               // executablePath: '/usr/bin/chromium-browser',
-               //  headless: 'new',
-               //  args: ['--no-sandbox']
+                 // headless: false ,
+                 // slowMo: 250,
+                executablePath: '/usr/bin/chromium-browser',
+                 headless: 'new',
+                args: ['--no-sandbox']
                   // `headless: true` (default) enables old Headless;
                   // `headless: 'new'` enables new Headless;
                   // `headless: false` enables “headful” mode.

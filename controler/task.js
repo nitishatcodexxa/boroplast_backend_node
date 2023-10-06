@@ -4,6 +4,8 @@ const jwt =require('jsonwebtoken')
 const moment = require('moment')
 const user_model = require('../model/user')
 const notification_model = require('../model/notification_manager')
+const user_hand_activity = require('../model/userhandlingactivity')
+const stock_model = require('../model/stockholding')
 var admin = require("firebase-admin");
 var serviceAccount = require("../pppp-fa588-firebase-adminsdk-1732e-ef3f45b1eb.json");
 admin.initializeApp({
@@ -251,16 +253,46 @@ exports.userRetriveTaskall=(req,res)=>{
 }
 
 
-exports.update_task_by_user=(req,res)=>{
+exports.update_task_by_user=async(req,res)=>{
     let m = new Date();
-    task_model.task_model.updateOne({"task_id":req.body.id},{
+   await task_model.task_model.updateOne({"task_id":req.body.id,'task_assigned_user_id':req.body.user_id},{
   task_status:'Complete',
   task_end_date:moment(new Date()).format('DD MMM YYYY'),
   complete_task_location:req.body.location
     }).then((data)=>{
         res.send({"data":data})
+        console.log('done')
+    }).then(async()=>{
+if(req.body.is_maintainance===true){
+let activitydata=null;
+await user_hand_activity.user_handling_activity_model.find({"task_id":req.body.id,'user_id':req.body.user_id}).then((datat)=>{
+    activitydata=datat;
+});
+
+if(activitydata!==null){
+
+for (let i = 0; i < activitydata.length; i++) {
+
+    if(activitydata[i].component_id!==""){
+        try {
+         let int_quentity =  0 ;
+await stock_model.stock_model.findOne({"user_id": req.body.user_id},{assets: {$elemMatch: {component_id:activitydata[i].component_id}}}).then((ssd)=>{ 
+    int_quentity = parseInt(ssd.assets[0].quentity);
+    }).then(async()=>{
+         await  stock_model.stock_model.findOneAndUpdate({'user_id': req.body.user_id, 'assets.component_id':  activitydata[i].component_id }, {'$set': {'assets.$.quentity': parseInt(int_quentity) - parseInt(activitydata[i].quentity)}}).then((e)=>{
+        console.log("updates")
+    })  
     })
-}
+   
+     } catch (error) {
+            console.log(error)
+        }
+
+
+}}}
+}else{
+    console.log('note')
+}})}
 
 
 exports.update_task_for_ongoing_report=(req,res)=>{

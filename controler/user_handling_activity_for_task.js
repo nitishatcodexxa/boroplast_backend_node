@@ -44,7 +44,12 @@ res.send({"data":p})
         component:"",
         component_cost:0,
         component_repaire_cost:0,
+        component_id:"",
+        quentity:0,
 
+
+
+        //////////////////////////////////////////////////
         ref:"1",
         is_see_more:false,
 /////////////////////////////////////
@@ -84,7 +89,12 @@ user_handling_activity_model.user_handling_activity_model.updateOne({"id":req.bo
    current_ref:req.body.current_ref,
    ref:req.body.ref,
    component_cost:req.body.component_cost,
-   component_repaire_cost:req.body.component_repaire_cost
+   component_repaire_cost:req.body.component_repaire_cost,
+   
+   component_id:req.body.component_id,
+   quentity:req.body.quentity,
+
+
 
 }).then(()=>{
     if(req.files.file && req.files.file.length){ 

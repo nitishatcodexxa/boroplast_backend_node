@@ -3,8 +3,17 @@ const user_model = require('../model/user')
 const mongoose  = require('mongoose')
 const jwt = require('jsonwebtoken')
 const moment = require('moment')
+
+
+
 exports.Adduser=(req,res)=>{
 
+
+    user_model.user_model.find({"emailid":req.body.emailid}).then((ss)=>{
+        if(ss.length>0){
+         res.send({"err":"user alredy registered"})
+        }else{
+        
     let token ;
     const {authorization} = req.headers
     if(authorization && authorization.startsWith('Bearer')){
@@ -67,6 +76,16 @@ if(req.files.file && req.files.file.length){
 }
 
     }})}
+
+
+
+
+
+}
+})
+
+
+
 }
 
 
@@ -204,14 +223,16 @@ res.send({'data':"ok"})
     //////   for user section we put data here
 
     exports.userLogin = (req,res)=>{
-        
         user_model.user_model.findOne({"emailid":req.body.username.toLowerCase(),"password":req.body.password}).then((s)=>{
+            console.log(s)
             if(s!==null){
                 jwt.sign({ user_name:s.emailid, password:s.password},process.env.SECKRET_KEY, function(err, token) {
                     if(!err){
-                       res.send({"token":token,"data":s})
+                       res.send({"token":token,"data":s,"invalid" :false})
                     }  
                      });
+           }else{
+            res.send({"invalid":true});
            }
             
         })

@@ -25,6 +25,7 @@ const add_unit = require('./controler/unitmanagement')
 const add_activity = require('./controler/activity')
 const add_task = require('./controler/task')
 const add_admin = require('./controler/admin')
+const setting = require('./controler/setting')
 const path = require('path')
 const user_handling_activity= require('./controler/user_handling_activity_for_task')
 const { v4: uuidv4 } = require('uuid'); 
@@ -53,11 +54,16 @@ hbs.registerHelper('formatTime', function (date, format) {
   return mmnt.format(format);
 });
 
-/*
-app.get('/',(req,res)=>{
-  res.send("iiuiu")
+
+hbs.registerHelper('multiplay',function(valueone , valuetwo){
+  return valueone * valuetwo;
 })
-*/
+
+
+app.get('/',(req,res)=>{
+  res.send("iiuiu connected")
+})
+
 
 try {
  mongoose.connect(urt_data.url)
@@ -205,7 +211,7 @@ app.delete('/delete_stock',stock.delete_stock)
 app.put('/update_quentity',stock.update_quentity)
 app.post('/retrive_updated_data',stock.retrive_update_value)
 
-
+app.post('/retrive_activity_array_for_admin_graaph',user_handling_activity.retrive_activity_for_panel_and_graphics)
 
 const compile = async function(templatename,data){
   const filePath =path.join(process.cwd(),'htmlfile',`${templatename}.hbs`)
@@ -227,7 +233,9 @@ let is_replace = req.body.activityArray.filter((e)=>(e.is_replace==true));
 let is_repair = req.body.activityArray.filter((e)=>(e.is_repair==true));
 
 for (i = 0; i < is_replace.length; i++) {  
-  total += is_replace[i].component_cost;  
+  let q = 0;
+  q=is_replace[i].quentity;
+  total += is_replace[i].component_cost * parseInt(q) ;  
   console.log(total)
 }
 
@@ -392,7 +400,9 @@ let  activityArray = null;
 
 
 
+//////////////////////  google map setting retrive data 
 
+app.post('/googlemap_setting',setting.retrive_setting);
 
 
 

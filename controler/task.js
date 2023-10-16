@@ -7,14 +7,11 @@ const notification_model = require('../model/notification_manager')
 const user_hand_activity = require('../model/userhandlingactivity')
 const stock_model = require('../model/stockholding')
 var admin = require("firebase-admin");
-var serviceAccount = require("../pppp-fa588-firebase-adminsdk-1732e-ef3f45b1eb.json");
+var serviceAccount = require("../ambaniroyalcricket-firebase-adminsdk-hgs66-b9e936cdea.json");
 admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount),
-  databaseURL: "https://pppp-fa588-default-rtdb.firebaseio.com"
+    credential: admin.credential.cert(serviceAccount),
+    databaseURL: "https://ambaniroyalcricket-default-rtdb.firebaseio.com"
 });
-
-
-
 
 
 
@@ -27,7 +24,9 @@ exports.add_task=(req,res)=>{
     jwt.verify(token,process.env.SECKRET_KEY,(err,decode)=>{
 
     if(!err){ 
-    
+    let index_position = 0;
+    index_position = req.body.index;
+
 const add_data_task = new task_model.task_model({
     task_title:req.body.task_title,
     task_id:uuidv4(),
@@ -59,6 +58,7 @@ const add_data_task = new task_model.task_model({
     task_end_date:req.body.task_end_date,
     cancel_date:req.body.cancel_date,
     on_going_date:req.body.on_going_date,
+    index:index_position,
 
 })
 add_data_task.save().then(()=>{

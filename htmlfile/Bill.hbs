@@ -69,7 +69,9 @@ h2{
     border-style:solid;
 }
 
-
+.button_color{
+  
+}
 
 </style>
 
@@ -80,7 +82,7 @@ h2{
 <body>
     <div class="container">
   <div class="header_flag">
-<img src="https://admin.codexxa.co.in/img/logo.png"/>
+<img src="https://admin.codexxa.co.in/img/img/logo.png"/>
   </div>  
 <br/>
 
@@ -96,9 +98,9 @@ h2{
     </div>
 
 <div class="col_one">
-<h6>Report Id: 0011254585</h6>
+<h6>Report Id : 0011254585</h6>
 <h6>Exe. Date :  {{formatTime  data.task_execution_date "MM-DD-YYYY"}}</h6>
-<h6>Completion Date: {{formatTime  data.task_end_date  "MM-DD-YYYY"}}</h6>
+<h6>Completion Date : {{formatTime  data.task_end_date  "MM-DD-YYYY"}}</h6>
 <h6>Attendant Name : {{data.task_assigned_user_name}}</h6>
   
 </div>
@@ -117,22 +119,63 @@ h2{
 <div class="border_add">
 {{#ifEquals is_resolved false}} 
     <div class="description">
-<h6>name : {{activity_name}}</h6>
-<h6>status : ok</h6>
+<h6>Name : {{activity_name}}</h6>
+<div style="display: flex; flex-direction: row;" >  
+<div>
+Status :
+</div>
+
+<div style="background-color: rgb(31, 22, 165); margin-left: 5px; color: antiquewhite; border: #ebebf5; border-radius: 5px; font-size: 14px;font-weight: bold; margin: 2px;">
+ <div style="padding: 2px;margin-left: 3px;margin-right: 3px;">
+    ok
+ </div>
+
+</div>
+</div>
+
     </div>
 {{/ifEquals}}
 
 {{#ifEquals is_resolved true}} 
 
  <div class="description">
-<h6>name : {{activity_name}}</h6>
+<h6>Name : {{activity_name}}</h6>
 
 {{#ifEquals is_repair true}} 
-<h6>status : Repair</h6>
+
+<div style="display: flex; flex-direction: row;" >  
+  <div>
+  Status :
+  </div>
+  
+  <div style="background-color: rgba(26, 201, 20, 0.952); margin-left: 5px; color: antiquewhite; border: #ebebf5; border-radius: 5px; font-size: 14px;font-weight: bold; margin: 2px;">
+   <div style="padding: 2px;margin-left: 3px;margin-right: 3px; color: rgba(255, 255, 255,1);">
+      Resolved
+   </div>
+  
+  </div>
+  </div>
+  
+<h6>Action Perform : Repair</h6>
 {{/ifEquals}}
 
 {{#ifEquals is_replace true}}
-<h6>status : Replace</h6>
+
+<div style="display: flex; flex-direction: row;" >  
+  <div>
+  Status :
+  </div>
+  
+  <div style="background-color:  rgba(26, 201, 20, 0.952); margin-left: 5px; color: rgb(243, 242, 241); border: #ebebf5; border-radius: 5px; font-size: 14px;font-weight: bold; margin: 2px;">
+   <div style="padding: 2px;margin-left: 3px;margin-right: 3px; color: rgba(255, 255, 255,1);">
+  Resolved
+   </div>
+  </div>
+  </div>
+  
+
+<h6>Action Perform : Replace</h6>
+<h6>Quantity : {{quentity}}</h6>
 {{/ifEquals}}
 <h6>component :  {{component}}</h6>
 <h6>Remark :  {{remark}}</h6>
@@ -157,11 +200,43 @@ h2{
        {{/photo_after}}
     </div>
 {{#ifEquals is_repair true}} 
-<h6 style="margin-top: 20px;">cost : {{component_repaire_cost}}</h6>
+
+<div style="display: flex;margin-left: 10px ; flex-direction: row;border: 2px;border-radius: 5px;border-style: solid;width: 300px;">
+<div style="margin-left: 10px;">
+Cost : 
+</div>
+
+<div style="margin-left: 5px; font-size: 14px;font-weight: 'bold';">
+  {{component_repaire_cost}}
+</div>
+
+
+</div>
+
 {{/ifEquals}}
 
+
+
 {{#ifEquals is_replace true}}
-<h6 style="margin-top: 20px;">cost : {{component_cost}}</h6>
+<div style="display: flex;margin-left: 10px ; flex-direction: row;border: 2px;border-radius: 5px;border-style: solid;width: 400px;">
+  <div style="margin-left: 10px;">
+  Component Cost : 
+  </div>
+  
+  <div style="margin-left: 5px; font-size: 14px;font-weight: 'bold';">
+  {{component_cost}}
+  </div>
+  </div>
+<br/>
+<div style="display: flex;margin-left: 10px ; flex-direction: row;border: 2px;border-radius: 5px;border-style: solid;width: 400px;">
+  <div style="margin-left: 10px;">
+ Total Component Cost : 
+  </div>
+  
+  <div style="margin-left: 5px; font-size: 14px;font-weight: 'bold';">
+  {{component_cost}} * {{quentity}} = {{multiplay  component_cost quentity}}
+  </div>
+  </div>
 {{/ifEquals}}
 
 </div>

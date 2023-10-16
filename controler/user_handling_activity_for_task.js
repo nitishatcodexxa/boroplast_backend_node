@@ -106,7 +106,7 @@ user_handling_activity_model.user_handling_activity_model.updateOne({"id":req.bo
     Jimp.read(`./upload/${req.files.file[i].filename}`)
     .then((image) => {
       Jimp.loadFont(Jimp.FONT_SANS_128_WHITE).then((font) => { 
-        image.print(font, 30, 30, moment(new Date()).format('DD MM YYYY hh:ss'));
+        image.print(font, 30, 30, moment(new Date()).format('DD MM YYYY hh:mm:ss'));
         image.print(font, 10, 1, {
             text: req.body.location,
             alignmentX: Jimp.HORIZONTAL_ALIGN_CENTER,
@@ -146,7 +146,7 @@ exports.update_photo_for_level_two=(req,res)=>{
         Jimp.read(`./upload/${req.files.file[i].filename}`)
         .then((image) => {
           Jimp.loadFont(Jimp.FONT_SANS_128_WHITE).then((font) => { 
-            image.print(font, 30, 30, moment(new Date()).format('DD MM YYYY hh:ss'));
+            image.print(font, 30, 30, moment(new Date()).format('DD MM YYYY hh:mm:ss'));
             image.print(font, 10, 1, {
                 text: req.body.location,
                 alignmentX: Jimp.HORIZONTAL_ALIGN_CENTER,
@@ -241,7 +241,7 @@ exports.update_photo_for_atm_after=(req,res)=>{
         Jimp.read(`./upload/${req.files.file[i].filename}`)
         .then((image) => {
           Jimp.loadFont(Jimp.FONT_SANS_128_WHITE).then((font) => { 
-            image.print(font, 30, 30, moment(new Date()).format('DD MM YYYY hh:ss'));
+            image.print(font, 30, 30, moment(new Date()).format('DD MM YYYY hh:mm:ss'));
             image.print(font, 10, 1, {
                 text: req.body.location,
                 alignmentX: Jimp.HORIZONTAL_ALIGN_CENTER,
@@ -312,3 +312,17 @@ exports.admin_get_activity=(req,res)=>{
         res.send({"data":e})
             }) 
 }
+
+
+
+
+
+
+
+exports.retrive_activity_for_panel_and_graphics=async(req,res)=>{
+await  user_handling_activity_model.user_handling_activity_model.find({}).then((faf)=>{
+    res.send({"data":faf});
+});
+
+}
+

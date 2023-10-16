@@ -34,6 +34,8 @@ const task_schema = new Schema({
 
     cancel_date:Date,
     on_going_date:Date,
+
+    index:Number,
 })
 
 exports.task_model = new mongoose.model('task',task_schema)
